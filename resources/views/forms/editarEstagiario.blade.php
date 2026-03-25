@@ -1,156 +1,78 @@
 @extends('layouts.App')
 
 @section('content')
-    @php
-        $class_input =
-            'apaerence-none bg-transparent w-full border-none outline outline-1 outline-slate-300 focus:outline-blue-500 text-slate-500 placeholder-slate-400/50';
-    @endphp
+
     <div class="mt-20 space-y-10">
 
         <x-Title-app title="Estagiários > Editar" icon="bi bi-people-fill" action="/estagiarios" type="secondary"
             text-action="Voltar" />
 
         {{-- Check for available planos --}}
-        @if (sizeof($planos) > 0)
-            <x-bladewind::card>
-                <form action="/estagiarios/atualizar/" method="POST" enctype="multipart/form-data" class="space-y-6">
+        @if (!empty($select_planos))
+            <div class="ui-form">
+
+                <form action="/estagiarios/atualizar" method="POST" enctype="multipart/form-data" class="space-y-6">
                     @csrf
 
 
-                    <!-- Nome -->
                     <input type="hidden" name="id" value="{{ $estagiario->id }}">
-                    <div>
-                        <label for="nome" class="block text-sm font-medium text-slate-600 mb-1">Nome<x-obr /></label>
-                        <div class="flex items-center border border-slate-300 rounded-lg">
-                            <i class="bi-person-fill text-slate-400 p-2"></i>
-                            <input type="text" id="nome" name="nome" value="{{ $estagiario->nome }}"
-                                maxlength="50" required pattern="^[A-Za-zÀ-ÿ\s]{3,50}$" class="{{ $class_input }}"
-                                placeholder="Exemplo: João Silva">
-                        </div>
-                    </div>
+                    <!-- Nome -->
+                    <x-bladewind::input label="Nome" name="nome" value="{{ $estagiario->nome }}" required />
 
                     <!-- Email -->
-                    <div>
-                        <label for="email" class="block text-sm font-medium text-slate-600 mb-1">Email</label>
-                        <div class="flex items-center border border-slate-300 rounded-lg">
-                            <i class="bi-envelope-fill text-slate-400 p-2"></i>
-                            <input type="email" id="email" name="email" value="{{ $estagiario->email }}"
-                                pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,}$" class="{{ $class_input }}"
-                                placeholder="Exemplo: email@dominio.com">
-                        </div>
-                    </div>
+                    <x-bladewind::input type="email" label="Email" name="email" error_message="email invalido!"
+                        value="{{ $estagiario->email }}" />
 
-                    <!-- Telefones e BI -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label for="tel" class="block text-sm font-medium text-slate-600 mb-1">Telefone</label>
-                            <div class="flex items-center border border-slate-300 rounded-lg">
-                                <i class="bi-telephone-fill text-slate-400 p-2"></i>
-                                <input type="text" id="tel" name="tel" value="{{ $estagiario->tel }}"
-                                    maxlength="9" pattern="^9\d{8}$" class="{{ $class_input }}"
-                                    placeholder="9 dígitos começando por 9">
-                            </div>
-                        </div>
+                    <!-- Telefone -->
+                    <x-bladewind::input numeric="true" label="telefone" name="telefone" value="{{ $estagiario->tel }}"
+                        required />
 
-                        <div>
-                            <label for="bi" class="block text-sm font-medium text-slate-600 mb-1">Número de
-                                BI<x-obr /> </label>
-                            <div class="flex items-center border border-slate-300 rounded-lg">
-                                <i class="bi-card-text text-slate-400 p-2"></i>
-                                <input type="text" id="bi" name="bi" value="{{ $estagiario->bi }}"
-                                    maxlength="14" required pattern="^\d{9}[A-Z]{2}\d{3}$" class="{{ $class_input }}"
-                                    placeholder="006984317LA098">
-                            </div>
-                        </div>
-                    </div>
+                    <!-- Bi -->
+                    <x-bladewind::input label="Número de bilhete de identidade/Nif" name="bi" required
+                        value="{{ $estagiario->bi }}" />
 
-                    <!-- Data de Nascimento -->
-                    <div>
-                        <label for="dt_nascimento" class="block text-sm font-medium text-slate-600 mb-1">Data de
-                            Nascimento<x-obr /></label>
-                        <div class="flex items-center border border-slate-300 rounded-lg">
-                            <i class="bi-calendar-fill text-slate-400 p-2"></i>
-                            <input type="date" id="dt_nascimento" name="dt_nascimento"
-                                value="{{ $estagiario->dt_nascimento }}" required class="{{ $class_input }}"
-                                min="1980-01-01" max="2015-01-01">
-                        </div>
-                    </div>
+                    {{-- data de nascimento --}}
+                    <x-bladewind::datepicker name="dt_nascimento" label="data de nascimento" required="true" format="dd-mm-yy"
+                        minDate="1-1-1999" maxDate="1-1-2015" selectedValue="{{ $estagiario->dt_nascimento }}" />
 
-                    <!-- Plano -->
-                    <div>
-                        <label for="plano" class="block text-sm font-medium text-slate-600 mb-1">Plano<x-obr /></label>
-                        <div class="flex items-center border border-slate-300 rounded-lg">
-                            <i class="bi-book-fill text-slate-400 p-2"></i>
-                            <select id="plano" name="plano" required class="{{ $class_input }}">
-                                @foreach ($planos as $plano)
-                                    <option value="{{ $plano->id }}" @if ($estagiario->plano_estagio_id == $plano->id) selected @endif>
-                                        {{ $plano->nome }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
+                    {{-- plano --}}
+                    <x-bladewind::select name="plano" label="planos de estagio" :data="$select_planos" required
+                        selectedValue="{{ $estagiario->plano_estagio_id }}" />
 
                     <!-- Gênero -->
-                    <div>
-                        <label for="sexo" class="block text-sm font-medium text-slate-600 mb-1">Gênero<x-obr /></label>
-                        <div class="flex items-center border border-slate-300 rounded-lg">
-                            <i class="bi-gender-ambiguous text-slate-400 p-2"></i>
-                            <select id="sexo" name="sexo" required class="{{ $class_input }}">
-                                <option value="M" @if ($estagiario->sexo == 'M') selected @endif>Masculino</option>
-                                <option value="F" @if ($estagiario->sexo == 'F') selected @endif>Feminino</option>
-                            </select>
-                        </div>
-                    </div>
+                    <x-bladewind::select name="genero" label="genero" :data="[['label' => 'masculino', 'value' => 'M'], ['label' => 'femenino', 'value' => 'F']]" required selectedValue="{{ $estagiario->sexo }}" />
 
-                    <!-- Instituto -->
-                    <div>
-                        <label for="instituto" class="block text-sm font-medium text-slate-600 mb-1">Instituto de Origem
-                            <x-obr /></label>
-                        <div class="flex items-center border border-slate-300 rounded-lg">
-                            <i class="bi-buildings-fill text-slate-400 p-2"></i>
-                            <select id="instituto" name="instituto" class="{{ $class_input }}">
-                                @foreach ($institutos as $instituto)
-                                    <option value="{{ $instituto->id }}" @if ($estagiario->instituto_id == $instituto->id) selected @endif>
-                                        {{ $instituto->nome }}</option>
-                                @endforeach
-                                <option value="">Estagiário solo</option>
-                            </select>
-                        </div>
-                    </div>
+                    <!-- institutos -->
+                    <x-bladewind::select name="institutos" label="instituto" :data="$select_institutos"
+                        selectedValue="{{ $estagiario->instituto }}" required />
 
                     <!-- Foto -->
-                    <div>
-                        <label for="foto" class="block text-sm font-medium text-slate-600 mb-1">Foto (Passe) <x-obr />
-                        </label>
-                        <x-bladewind::filepicker name="foto" accepted_file_types="image/*" max_file_size="10mb"
-                            placeholder="Foto passe" selected_value="{{ asset('uploads/' . $estagiario->foto) }}"
-                            required />
-                    </div>
+
+                    <x-bladewind::filepicker name="foto" accepted_file_types='image/*' max_file_size='10mb'
+                        placeholder_line1="Carregue a foto passe" cceptedFileTypes=".png" required
+                        selectedValue="{{ asset('storage/' . $estagiario->foto) }}" />
+
 
                     <!-- Documentos -->
-                    <div>
-                        <label for="documentos" class="block text-sm font-medium text-slate-600 mb-1">outro Documento
-                            (opcional)</label>
-                        <x-bladewind::filepicker name="documentos" accepted_file_types="application/pdf,image/*"
-                            max_file_size="10mb" placeholder="Documentos"
-                            selected_value="{{ asset('uploads/' . $estagiario->documentos ?? '') }}" />
 
-                        <a href="{{ asset('uploads/' . $estagiario->documentos ?? '') }}"
-                            class="text-blue-500 text-sm" target="_blank">ver o documento</a>
-                    </div>
+                    <x-bladewind::filepicker name="documentos" placeholder_line1="outro documentos"
+                        accepted_file_types="application/pdf,image/*" max_file_size="10mb"
+                        :selectedValue="$estagiario->documentos ? asset('storage/' . $estagiario->documentos) : ''" />
+
 
                     <!-- Ações -->
                     <div class="flex justify-end gap-4 mt-4">
-                        <x-bladewind::button can_submit="true">Confirmar</x-bladewind::button>
+
+                        <x-bladewind::button can_submit='true'>confirmar</x-bladewind::button>
                     </div>
+
                 </form>
-            </x-bladewind::card>
+            </div>
         @else
             <x-bladewind::card>
                 <div class="flex flex-col items-center gap-4">
                     <x-bladewind::tag color="red" label="Não há plano de estágio disponível" />
-                    <img src="{{ asset('vendor/bladewind/images/empty-state.svg') }}" alt="Empty State"
-                        class="size-96" />
+                    <img src="{{ asset('vendor/bladewind/images/empty-state.svg') }}" alt="Empty State" class="size-96" />
                 </div>
             </x-bladewind::card>
         @endif

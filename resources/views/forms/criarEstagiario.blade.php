@@ -8,9 +8,11 @@
             text-action='voltar' />
         {{-- end title section --}}
 
+        @if (!empty($select_planos))
 
-
-        @if (sizeof($select_planos) > 0)
+        <x-bladewind::alert>
+            preencha cada campo de acordo as normas de validação
+        </x-bladewind::alert>
             <div class="ui-form">
 
                 <form action="/estagiarios/criar" method="POST" enctype="multipart/form-data" class="space-y-6">
@@ -26,10 +28,11 @@
                     <x-bladewind::input numeric="true" label="telefone" name="telefone" required />
 
                     <!-- Bi -->
-                    <x-bladewind::input  label="Número de bilhete de identidade/Nif" name="bi" required />
+                    <x-bladewind::input label="Número de bilhete de identidade/Nif" name="bi" required />
 
                     {{-- data de nascimento --}}
-                    <x-bladewind::datepicker name="dt_nascimento" label="data de nascimento" required="true" format="dd-mm-yy" minDate="1-1-1999" maxDate="1-1-2015"/>
+                    <x-bladewind::datepicker name="dt_nascimento" label="data de nascimento" required="true" format="dd-mm-yy"
+                        minDate="1-1-1999" maxDate="1-1-2015" />
 
                     {{-- plano --}}
                     <x-bladewind::select name="plano" label="planos de estagio" :data="$select_planos" required />
@@ -47,8 +50,8 @@
 
                     <!-- Documentos -->
 
-                    <x-bladewind::filepicker name="documentos" placeholder_line1="outro documentos" accepted_file_types="application/pdf,image/*"
-                        max_file_size='10mb' />
+                    <x-bladewind::filepicker name="documentos" placeholder_line1="outro documentos"
+                        accepted_file_types="application/pdf,image/*" max_file_size='10mb' />
 
 
                     <!-- Ações -->
@@ -61,17 +64,7 @@
             </div>
 
         @else
-            <x-bladewind::card>
-                <div class="flex flex-col items-center gap-4">
-
-                    <x-bladewind::tag color='red' label='não tem plano de estagio disponivel' />
-
-                    <img src="{{ asset('vendor/bladewind/images/empty-state.svg') }}" alt="" class="size-96">
-
-
-
-                </div>
-            </x-bladewind::card>
+            <x-require-state info="Para registrar um estagiario é necessario registrar primeiro um plano de estagio!"/>
         @endif
 
 

@@ -1,9 +1,16 @@
 @extends('layouts.main')
 @section('content')
 
-    <div class="relative flex w-full items-center justify-center h-full  bg-slate-200">
+    <div class="relative flex flex-col w-full items-center justify-center h-full  bg-slate-200 gap-4">
         {{-- end --}}
-        <div class="absolute left-0 top-0 w-full h-full opacity-5 z-0" id="particles-js"></div>
+   
+
+        @if (session()->has('error'))
+            <div class='w-md'>
+                <x-bladewind::alert type="error"> {{ session()->get('error') }}</x-bladewind::alert>
+            </div>
+        @endif
+        <!-- end -->
 
         <form
             class="flex flex-col justify-center gap-4 min-h-32 min-w-96 z-10 bg-white backdrop-blur p-8 rounded-md shadow-sm"
@@ -27,10 +34,7 @@
             <x-bladewind::checkbox name="lembrar" label='lembrar' value='true' label_css='text-gray-500' />
 
             <!-- end -->
-            @if (session()->has('error'))
-                <x-bladewind::alert type="error"> {{ session()->get('error') }}</x-bladewind::alert>
-            @endif
-            <!-- end -->
+
             <div class="flex flex-col z-10">
                 <x-bladewind::button can_submit name='login' has_spinner="true" onclick="showButtonSpinner('.login')">
                     iniciar sessão

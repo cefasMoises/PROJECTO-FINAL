@@ -20,23 +20,26 @@
                     </tr>
                 </x-slot>
 
+                @php
+                    $count = 1;
+                @endphp
                 {{-- Table Rows --}}
                 @forelse ($estagiarios as $estagiario)
                     <tr>
-                        <td>{{ $estagiario->id }}</td>
+                        <td>{{ $count++ }}</td>
                         <td>{{ $estagiario->nome }}</td>
-                        <td>{{ $estagiario->instituto->nome ?? 'estagio solo' }}</td>
+                        <td>{{ $estagiario->instituto->nome ?? 'individual' }}</td>
                         <td>{{ $estagiario->plano->nome ?? '' }}</td>
                         <td>{{ $estagiario->created_at->format('d/m/Y') }}</td>
                         <td>
                             <div class="flex gap-2">
                                 {{-- Delete Button --}}
-                                <x-bladewind::button color="red" onclick="showModal('{{ $estagiario->id }}')">
+                                <x-bladewind::button title="deletar" color="red" onclick="showModal('{{ $estagiario->id }}')">
                                     <i class="bi-trash"></i>
                                 </x-bladewind::button>
 
                                 {{-- Edit Button --}}
-                                <x-bladewind::button tag="a" color="green"
+                                <x-bladewind::button title="editar" tag="a" color="green"
                                     href="/estagiarios/{{ $estagiario->id }}">
                                     <i class="bi-pencil"></i>
                                 </x-bladewind::button>
@@ -62,10 +65,13 @@
                             </form>
                         </div>
                     </x-bladewind::modal>
+
                 @empty
                     <tr>
-                        <td class="text-center" colspan="6">
-                            <x-bladewind::tag label='Nenhum estagiário encontrado' />
+                        <td colspan="6">
+
+                            <x-empty-state />
+
                         </td>
                     </tr>
                 @endforelse
