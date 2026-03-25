@@ -1,0 +1,29 @@
+@use "colors" as c;
+
+@keyframes anim-load-gradient {
+    from {
+        background: c.$gray-100;
+
+        // opacity: 0;
+    }
+    to {
+        background: c.$gray-300;
+    }
+}
+
+@keyframes anim-enter-linear {
+    from {
+        translate: -100vh 0;
+    }
+    to {
+        translate: 0 0;
+    }
+}
+@keyframes anim-out-linear {
+    from {
+        translate: 200vh 0;
+    }
+    to {
+        translate: 0 0;
+    }
+}

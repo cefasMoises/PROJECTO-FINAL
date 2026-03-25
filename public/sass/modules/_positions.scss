@@ -1,0 +1,30 @@
+//posicionamento
+.absolute {
+    position: absolute;
+}
+.relative {
+    position: relative;
+}
+.fixed {
+    position: fixed;
+}
+//direccoes
+.top {
+    top: 0;
+}
+.bottom {
+    bottom: 0;
+}
+.left {
+    left: 0;
+}
+.right {
+    right: 0;
+}
+//camadas de visibilidade
+.layer-1 {
+    z-index: -1;
+}
+.layer-full {
+    z-index: 100;
+}

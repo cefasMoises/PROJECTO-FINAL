@@ -1,0 +1,77 @@
+@use "colors" as c;
+
+
+//larguras importante
+.w-100 {
+    width: 100%;
+}
+
+.w-90 {
+    width: 90%;
+}
+
+.w-80 {
+    width: 80%;
+}
+
+.w-70 {
+    width: 70%;
+}
+
+//alturas importantes
+.h-full {
+    min-height: 100%;
+    max-height: 100%;
+}
+
+.h-screen {
+    height: 100vh;
+}
+
+.h-100 {
+    min-height: 100vh;
+}
+
+.h-90 {
+    min-height: 90vh;
+}
+
+.h-80 {
+    min-height: 80vh;
+}
+
+.h-70 {
+    min-height: 70vh;
+}
+
+//paddings predefinidos
+.p-0 {
+    padding: 0;
+}
+
+.p-8 {
+    padding: 8px;
+}
+
+.p-16 {
+    padding: 16px;
+}
+
+.p-32 {
+    padding: 32px;
+}
+
+//gaps
+.g-8 {
+    gap: 8px;
+}
+
+.g-16 {
+    gap: 16px;
+}
+
+.g-32 {
+    gap: 32px;
+}
+
+//

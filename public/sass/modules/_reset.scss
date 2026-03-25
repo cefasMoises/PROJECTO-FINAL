@@ -1,0 +1,42 @@
+@use "colors" as c;
+
+* {
+    padding: 0;
+    margin: 0;
+    font-family: sans-serif;
+    list-style: none;
+    position: relative;
+    text-decoration: none;
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+    appearance: none;
+    font-family: lato;
+   
+
+    &::-webkit-scrollbar {
+        width: 4px;
+    }
+    &::-webkit-scrollbar-thumb {
+        background-color: c.$gray-400;
+        border-radius: 8px;
+    }
+}
+body {
+  
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
+    min-height: 100vh;
+    background-color: c.$gray-200;
+}
+main {
+    display: flex;
+    align-items: center;
+
+    width: 100%;
+    min-height: 100vh;
+}
+.panel {
+    background-color: c.$white;
+}

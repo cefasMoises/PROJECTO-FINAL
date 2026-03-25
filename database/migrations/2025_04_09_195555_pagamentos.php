@@ -1,0 +1,36 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('pagamentos', function (Blueprint $table) {
+
+            $table->id();
+            $table->decimal('valor');
+            $table->string('m_pagamento');
+            $table->float('referencia')->unique();
+            $table->string('descricao');
+            $table->text('comprovativo')->nullable();
+            $table->foreignId('estagiario_id')->constrained()->onDelete('cascade');
+            $table->foreignId('usuario_id')->constrained()->onDelete('cascade');
+
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists("pagamentos");
+    }
+};
