@@ -14,119 +14,100 @@
             <form method="get" class="flex items-center">
                 @csrf
 
-                <x-bladewind::input type="search" name="aluno_id" id="aluno_id"
-                    placeholder="065"  transparent_suffix="false"  prefix="Pesquisar" prefixIsIcon="search" />
+                <x-bladewind::input type="search" name="estagiario_id" id="aluno_id" placeholder="065"
+                    transparent_suffix="false" prefix="Pesquisar" prefixIsIcon="search" list="lista-estagiarios" />
+
+                <datalist id="lista-estagiarios">
+
+                    @foreach ($estagiarios as $estagiario)
+                        <option value="{{ $estagiario->id }}">
+                            {{ $estagiario->nome . "----------" . $estagiario->plano->nome . "-----" . $estagiario->bi }}
+                        </option>
+                    @endforeach
+
+                </datalist>
 
             </form>
         </div>
 
-        @if ($aluno != null)
-            <div class="mt-4">
+        @if ($estagiario)
+            <div class="">
+                <x-bladewind::card>
+                    <div class="flex items-center justify-center w-full bg-yellow-100 p-4 gap-8">
 
-                <div class="ui-form">
 
-                    <div class="flex">
+                        <div class="size-32 rounded-full overflow-hidden">
+                            <img src="{{ asset("storage/" . $estagiario->foto) }}" alt="foto-aluno"
+                                class="transition-transform hover:scale-110 object-cover ease-in-out cursor-pointer ">
+                        </div>
+                        {{-- end --}}
 
-                        <div class="text-slate-500">
-                            <img class="size-16 object-cover rounded-full mb-4" src="{{ asset('uploads/' . $aluno->foto) }}"
-                                alt="Foto de {{ $aluno->nome }}">
 
-                            <h2 class="text-xl font-bold mb-2">{{ $aluno->nome }}</h2>
 
-                            <ul class="text-sm space-y-1">
-                                <li><strong>ID:</strong> {{ $aluno->id }}</li>
-                                <li><strong>BI:</strong> {{ $aluno->bi }}</li>
-                                <li><strong>Email:</strong> {{ $aluno->email ?: 'Não informado' }}</li>
-                                <li><strong>Telefone:</strong> {{ $aluno->tel ?: 'Não informado' }}</li>
-                                <li><strong>Sexo:</strong> {{ $aluno->sexo }}</li>
-                                <li><strong>Data de nascimento:</strong>
-                                    {{ \Carbon\Carbon::parse($aluno->dt_nascimento)->format('d/m/Y') }}</li>
-                                <li><strong>Status:</strong>
-                                    <x-bladewind::tag color="{{ $aluno->estatus === 'ON' ? 'green' : 'red' }}"
-                                        label='{{ $aluno->estatus }}' />
+                        <div class="flex flex-col text-slate-700 max-w-lg">
 
+                            <ul class="flex flex-wrap gap-4">
+                                <li class="flex items-center gap-1 font-bold">Nome:<span
+                                        class="font-normal  bg-yellow-200 p-1 rounded-md">{{ $estagiario->nome }}</span></li>
+                                <li class="flex items-center gap-1 font-bold">Nif/numero de bi:<span
+                                        class="font-normal  bg-yellow-200 p-1 rounded-md">{{ $estagiario->bi }}</span></li>
+                                <li class="flex items-center gap-1 font-bold">Email:<span
+                                        class="font-normal  bg-yellow-200 p-1 rounded-md">{{ $estagiario->email ?? "sem email" }}</span>
                                 </li>
-                                <li><strong>Criado em:</strong> {{ $aluno->created_at->format('d/m/Y H:i') }}</li>
+                                <li class="flex items-center gap-1 font-bold">telefone:<span
+                                        class="font-normal  bg-yellow-200 p-1 rounded-md">{{ $estagiario->tel }}</span></li>
+                                <li class="flex items-center gap-1 font-bold">Genero:<span
+                                        class="font-normal  bg-yellow-200 p-1 rounded-md">{{ $estagiario->sexo }}</span></li>
+                                <li class="flex items-center gap-1 font-bold">instituto de origem:<span
+                                        class="font-normal  bg-yellow-200 p-1 rounded-md">{{ $estagiario->instituto_id }}</span>
+                                </li>
+
+                                <li class="flex items-center gap-1 font-bold">Idade:<span
+                                        class="font-normal  bg-yellow-200 p-1 rounded-md">{{ date('Y') - date('Y', strtotime($estagiario->dt_nascimento)) }}</span>
+                                </li>
+
+                                <li class="flex items-center gap-1 font-bold">outro documento:<span
+                                        class="font-normal  bg-yellow-200 p-1 rounded-md">{{ $estagiario->documentos }}</span>
+                                </li>
+
+                                <li class="flex items-center gap-1 font-bold">codigo do estagiario:<span id="copy-data"
+                                        title="copiar"
+                                        class="font-normal cursor-pointer  bg-green-200 p-1 rounded-md">{{$estagiario->id}}</span>
+                                </li>
+
                             </ul>
+
                         </div>
 
-
                     </div>
-
-
-                </div>
-
+                </x-bladewind::card>
             </div>
         @endif
 
     </div>
 
     <x-bladewind::card>
-        <form action="/pagamentos/criar" method="POST" enctype="multipart/form-data" class="flex flex-col gap-4">
+        <form action="/pagamentos/criar" method="POST" enctype="multipart/form-data" class="flex flex-col gap-4 ui-form">
             @csrf
 
             <!-- Aluno -->
-            <div>
-                <label for="aluno_id" class="block text-sm font-medium text-slate-600 mb-1">Codigo Aluno<x-obr /></label>
-                <div class="flex items-center border border-slate-300 rounded">
-                    <i class="bi-person text-slate-400 p-2"></i>
-                    <input type="number" step="0.01" name="aluno_id" id="aluno_id" required min="0"
-                        class="{{ $class_input }}" placeholder="1">
-                </div>
-            </div>
-
+            <x-bladewind::input label="Codigo do Estagiario" name="estagiario_id" required="true" type="text" />
             <!-- Valor -->
-            <div>
-                <label for="valor" class="block text-sm font-medium text-slate-600 mb-1">Valor (KZ)<x-obr /> </label>
-                <div class="flex items-center border border-slate-300 rounded">
-                    <i class="bi-cash-coin text-slate-400 p-2"></i>
-                    <input type="number" step="0.01" name="valor" id="valor" max="900000" required
-                        class="{{ $class_input }}" placeholder="Ex: 15000.00">
-                </div>
-            </div>
+            <x-bladewind::input label="Quantia/Valor (kwz)" required="true" name="valor" required="true" numeric="true" />
 
             <!-- Método de Pagamento -->
-            <div>
-                <label for="m_pagamento" class="block text-sm font-medium text-slate-600 mb-1">Método de
-                    Pagamento <x-obr /> </label>
-                <div class="flex items-center border border-slate-300 rounded">
-                    <i class="bi-wallet2 text-slate-400 p-2"></i>
-                    <select name="m_pagamento" id="m_pagamento" required class="{{ $class_input }}">
-                        <option value="Transferência">Transferência</option>
-                        <option value="Tpa">TPA</option>
-                        <option value="dinheiro">dinheiro</option>
-                        <option value="Outro">Outro</option>
-                    </select>
-                </div>
-            </div>
+            <x-bladewind::select label="Metodo de Pagamento" name="metodo" required="true" :data="[['label' => 'Trasnferencia', 'value' => 'ATM'], ['label' => 'Multicaixa', 'value' => 'TPA']]" />
 
-            <!-- Referência -->
-            <div id='referencia_pagamento'>
-                <label for="referencia" class="block text-sm font-medium text-slate-600 mb-1">Referência<x-obr /> </label>
-                <div class="flex items-center border border-slate-300 rounded">
-                    <i class="bi-hash text-slate-400 p-2"></i>
-                    <input type="number" name="referencia" id="referencia" step="1" required class="{{ $class_input }}"
-                        placeholder="Ex: 20250401001">
-                </div>
-            </div>
+            <!-- Método de Pagamento -->
+            <x-bladewind::select label="Sumario" multiple="true" name="sumario" required="true" :data="$summary_payments" />
+     
 
-            <!-- Descrição -->
-            <div>
-                <label for="descricao" class="block text-sm font-medium text-slate-600 mb-1">Descrição <x-obr /> </label>
-                <div class="border border-slate-300 rounded">
-                    <textarea name="descricao" id="descricao" rows="3"
-                        class="w-full p-2 text-slate-500 outline-none resize-none"
-                        placeholder="Observações ou detalhes do pagamento..." required></textarea>
-                </div>
-            </div>
 
             <!-- Comprovativo -->
-            <div>
-                <label for="comprovativo" class="block text-sm font-medium text-slate-600 mb-1">Comprovativo (PDF ou
-                    imagem) <x-obr /> </label>
-                <x-bladewind::filepicker name="comprovativo" accepted_file_types="application/pdf,image/*"
-                    max_file_size="5mb" placeholder="Selecione o comprovativo" required />
-            </div>
+
+            <x-bladewind::filepicker name="comprovativo" accepted_file_types="application/pdf,image/*"
+                placeholder_line1="Comprovativo escaneado (pdf)" max_file_size="5mb" placeholder="Selecione o comprovativo"
+                required />
 
             <!-- Usuário logado (hidden ou dropdown se admin) -->
             <input type="hidden" name="usuario_id" value="{{ session()->get('user_id') }}" />

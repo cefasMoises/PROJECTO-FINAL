@@ -15,10 +15,9 @@ return new class extends Migration
 
             $table->id();
             $table->decimal('valor');
-            $table->string('m_pagamento');
-            $table->float('referencia')->unique();
-            $table->string('descricao');
-            $table->text('comprovativo')->nullable();
+            $table->string('metodo');
+            $table->json('sumarios');
+            $table->text('comprovativo');
             $table->foreignId('estagiario_id')->constrained()->onDelete('cascade');
             $table->foreignId('usuario_id')->constrained()->onDelete('cascade');
 

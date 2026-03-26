@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Estagiario;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Str;
@@ -37,9 +38,22 @@ class PagamentoController extends Controller
     {
 
 
-        $aluno_id = $id->input('aluno_id') ?? null;
-        $aluno = Aluno::find($aluno_id);
-        return view('forms.criarPagamento', compact('aluno'));
+        $summary_payments = [
+            ['label' => 'Inscrição', 'value' => '1'],
+            [
+                'label' => 'passe',
+                'value' => '2'
+            ],
+            ['label' => 'certificado', 'value' => '3'],
+            ['label' => 'uniforme', 'value' => '4']
+        ];
+
+        $estagiario_id = $id->input('estagiario_id') ?? null;
+
+        $estagiarios = Estagiario::all();
+        $estagiario = Estagiario::find($estagiario_id);
+
+        return view('forms.criarPagamento', compact('estagiario', 'summary_payments', 'estagiarios'));
     }
 
     public function show($id)
@@ -61,9 +75,19 @@ class PagamentoController extends Controller
 
 
 
-   
 
 
+        return $dados;
+
+
+        $validator=Validator::make($dados->all(),[
+            'estagiario_id'=>'required',
+            'valor'=>['required','numeric'],
+            'metodo'=>['required'],
+            'sumario'=>['required'],
+            'usuario_id'=>['required'],
+            'comprovativo'=>['required','file']
+        ]);
 
         if ($dados->all() != null) {
 

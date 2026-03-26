@@ -5,11 +5,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class Pagamento extends Model
 {
-    public function aluno()
+
+
+    protected $fillable = [];
+    public function estagiario()
     {
-        return $this->belongsTo(Aluno::class);
+        return $this->belongsTo(Estagiario::class);
+
+
     }
-    public function usuario(){
+    public function usuario()
+    {
 
 
         return $this->belongsTo(Usuario::class);

@@ -26,6 +26,7 @@ return new class extends Migration {
             'email' => 'admin@gmail.com',
             'nome' => 'user_' . time(),
             'senha' => bcrypt('123456'),
+            'estatus'=>UserStates::getStateOn()
         ]);
 
         DB::table('usuarios')->insert([
