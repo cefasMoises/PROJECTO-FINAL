@@ -83,16 +83,19 @@
 
     <x-asidebar />
     {{-- end --}}
-    <main class='relative flex items-center justify-center grow'>
+
+    <main class='relative flex items-center justify-center grow bg-slate-200'>
         {{-- first --}}
-        <section class=" h-full grow overflow-y-auto">
-            <x-bladewind::card>
-                <div class="min-h-screen w-full">
+
+        <section class=" h-full grow w-full overflow-y-auto">
+        
+                <div class="min-h-screen w-full p-4 ">
                     @yield('content')
                 </div>
-            </x-bladewind::card>
+     
         </section>
         {{-- end --}}
+
         <x-bladewind::modal name="sair" show_action_buttons=false>
             <form method="get" action="/sair" class="flex flex-col items-center justify-between w-full h-32 ">
                 @csrf

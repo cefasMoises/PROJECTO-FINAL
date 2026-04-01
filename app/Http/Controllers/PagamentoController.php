@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Estagiario;
+use App\Models\Precos;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Number;
 use Illuminate\Support\Str;
 use App\Models\Curso;
 use App\Models\Turma;
@@ -12,6 +14,8 @@ use App\Models\Aluno;
 use App\Models\Pagamento;
 use App\Models\Usuario;
 use Illuminate\Support\Facades\Validator;
+use Ramsey\Uuid\Type\Decimal;
+use function Laravel\Prompts\number;
 
 
 class PagamentoController extends Controller
@@ -38,15 +42,8 @@ class PagamentoController extends Controller
     {
 
 
-        $summary_payments = [
-            ['label' => 'Inscrição', 'value' => '1'],
-            [
-                'label' => 'passe',
-                'value' => '2'
-            ],
-            ['label' => 'certificado', 'value' => '3'],
-            ['label' => 'uniforme', 'value' => '4']
-        ];
+
+        $summary_payments = Precos::all();
 
         $estagiario_id = $id->input('estagiario_id') ?? null;
 
@@ -76,61 +73,81 @@ class PagamentoController extends Controller
 
 
 
-
-        return $dados;
-
-
-        $validator=Validator::make($dados->all(),[
-            'estagiario_id'=>'required',
-            'valor'=>['required','numeric'],
-            'metodo'=>['required'],
-            'sumario'=>['required'],
-            'usuario_id'=>['required'],
-            'comprovativo'=>['required','file']
+        $validator = Validator::make($dados->all(), [
+            'estagiario_id' => 'required',
+            'metodo' => ['required'],
+            'sumarios' => ['required'],
+            'usuario_id' => ['required'],
+            'comprovativo' => ['required', 'file']
         ]);
 
-        if ($dados->all() != null) {
 
+        if ($validator->fails()) {
 
-            $aluno = Aluno::find($dados->aluno_id);
-            $usuario = Usuario::find($dados->usuario_id);
-
-
-
-            if ($aluno != null && $usuario != null) {
-
-
-                $arquivo = $dados->file('comprovativo');
-                $nomeArquivo = time() . '_' . $arquivo->getClientOriginalName();
-                $arquivo->move(public_path('uploads'), $nomeArquivo);
-
-                try {
-
-                    $novo_pagamento = new Pagamento();
-                    $novo_pagamento->valor = $dados->valor;
-                    $novo_pagamento->m_pagamento = $dados->m_pagamento;
-                    $novo_pagamento->referencia = $dados->referencia;
-                    $novo_pagamento->descricao = $dados->descricao;
-                    $novo_pagamento->usuario()->associate($usuario);
-                    $novo_pagamento->aluno()->associate($aluno);
-                    $novo_pagamento->comprovativo = $nomeArquivo;
-                    $aluno->estatus = 'ON';
-                    $aluno->update();
-                    $novo_pagamento->save();
-                    return redirect()->back()->with('sucess', 'pagamento registrado com sucesso');
-
-                } catch (\Exception $e) {
-
-
-                    return redirect()->back()->with('error', 'verifique se inseriu o codigo certo do aluno! obs: o numero de referencia de pagamento não pode ser duplicado');
-                }
-            } else {
-
-                return redirect()->back()->with('error', 'verifique se inseriu o codigo certo do aluno!');
-            }
-
-
-            return redirect()->back();
+            return redirect()->back()->with('error', $validator->errors()->first());
         }
+
+
+
+        $precos = explode(',', $dados->input('sumarios'));
+        $precos_name = '';
+        $total = 0;
+
+        foreach ($precos as $preco_id) {
+
+            $precos_name .= Precos::find($preco_id)->label." ,";
+
+        }
+
+
+
+        $estagiario = Estagiario::find($dados->input('estagiario_id'));
+        $usuario = Usuario::find($dados->input('usuario_id'));
+
+        $comprovativoFile = $dados->file('comprovativo')->storeAs('uploads', time() . $dados->file('comprovativo')->getClientOriginalName(), 'public');
+
+        $pagamento = Pagamento::create([
+            'estagiario_id' => $dados->input('estagiario_id'),
+            'usuario_id' => $dados->input('usuario_id'),
+            'metodo' => $dados->input('metodo'),
+            'comprovativo' => $comprovativoFile,
+            'sumarios' => json_encode($precos_name),
+            'valor' => $total
+        ]);
+
+        $pagamento->estagiario()->associate($estagiario);
+        $pagamento->usuario()->associate($usuario);
+        $pagamento->update();
+
+
+        return redirect()->back()->with('sucess', 'Pagamento registrado com sucesso!');
+
+    }
+
+    public function createSumarios(Request $dados)
+    {
+
+        $validator = Validator::make($dados->all(), [
+            'label' => ['required'],
+            'value' => ['required', 'numeric']
+        ]);
+
+
+        if ($validator->fails()) {
+            return redirect()->back()->with('error', $validator->errors()->first());
+        }
+
+        $kwanzaFormate = number_format($dados->input('value'), 2, ',', '.') . "KWZ";
+
+        $preco = Precos::create([
+            'label' => $dados->input('label') . "----" . $kwanzaFormate,
+            'value' => $dados->input('label') . "*" . $dados->input('value')
+        ]);
+
+        $preco->update([
+            'value' => $preco->id
+        ]);
+
+        return redirect()->back()->with('sucess', 'Novo sumario adicionado com exito!');
     }
 }

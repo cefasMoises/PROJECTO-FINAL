@@ -15,28 +15,31 @@
                     <tr>
                         <th>Indice</th>
                         <th>Cliente</th>
-                        <th>Descricao</th>
-                        <th>agente</th>
-                        <th>detalhes</th>
+                        <th>Plano/estagio</th>
+                        <th>Sumarios</th>
+                        <th>valor/total</th>
                         <th>data de emição</th>
+                        <th>opções</th>
                     </tr>
                 </x-slot>
 
-
+                @php
+                    $count = 1;
+                @endphp
                 @forelse ($pagamentos as $pagamento)
                     <tr>
 
-                        <td>{{ $pagamento->aluno->id }}</td>
-                        <td>{{ $pagamento->aluno->nome }}</td>
-                        <td>{{ $pagamento->aluno->cursos()->get()[0]->nome }}</td>
-                        <td>{{ $pagamento->descricao }}</td>
+                        <td>{{ $count++ }}</td>
+                        <td>{{ $pagamento->estagiario->nome }}</td>
+                        <td>{{ $pagamento->estagiario->plano->nome }}</td>
+                        <td>{{ $pagamento->sumarios}}</td>
                         <td>{{ $pagamento->valor . ' kz' }}</td>
-                        <td>{{ $pagamento->usuario->nome }}</td>
+                        <td>{{ $pagamento->created_at->format('d-m-Y') }}</td>
+                     
 
                         <td><x-bladewind::button onclick="showModal('{{ $pagamento->id }}')"><i
                                     class="bi bi-file-text"></i></x-bladewind::button></td>
 
-                        <td>{{ $pagamento->created_at->format('d-m-Y') }}</td>
 
                         <x-bladewind::modal size="large" name="{{ $pagamento->id }}" show_action_buttons='false'>
                             <div class="p-6 text-gray-800 text-sm font-sans">
@@ -50,18 +53,18 @@
                                         <p><strong>Agente:</strong> #{{ $pagamento->usuario->nome }}</p>
                                     </div>
                                     <div class="w-24 h-24 rounded overflow-hidden border">
-                                        <img src="{{ asset('uploads/' . $pagamento->aluno->foto) }}" alt="Foto do Aluno"
-                                            class="w-full h-full object-cover">
+                                        <img src="{{ asset('uploads/' . $pagamento->estagiario->foto) }}"
+                                            alt="Foto do estagiario-" class="w-full h-full object-cover">
                                     </div>
                                 </div>
 
-                                <!-- Informações do aluno -->
+                                <!-- Informações do estagiario- -->
                                 <div class="grid grid-cols-2 gap-4 mb-6">
                                     <div>
-                                        <p><strong>Nome do Aluno:</strong><br>{{ $pagamento->aluno->nome }}</p>
+                                        <p><strong>Nome do estagiario-:</strong><br>{{ $pagamento->estagiario->nome }}</p>
                                     </div>
                                     <div>
-                                        <p><strong>Email do Aluno:</strong><br>{{ $pagamento->aluno->email }}</p>
+                                        <p><strong>Email do estagiario-:</strong><br>{{ $pagamento->estagiario->email }}</p>
                                     </div>
                                 </div>
 
@@ -86,7 +89,7 @@
                                 <!-- Link para comprovativo -->
                                 <div class="mt-4">
                                     <strong>Comprovativo de Pagamento:</strong><br>
-                                    <a href="{{ asset('uploads/' . $pagamento->comprovativo) }}" target="_blank"
+                                    <a href="{{ asset('../store/' . $pagamento->comprovativo) }}" target="_blank"
                                         class="text-blue-600 underline hover:text-blue-800">
                                         Visualizar Comprovativo
                                     </a>

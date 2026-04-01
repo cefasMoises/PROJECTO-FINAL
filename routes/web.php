@@ -117,6 +117,7 @@ Route::middleware([Secretaria::class])->prefix('/pagamentos')->group(function ()
     Route::get('/form/{id?}', [PagamentoController::class, 'form']);
     Route::post('/criar', [PagamentoController::class, 'create']);
     Route::get('/{id}', [PagamentoController::class, 'show']);
+    Route::post('/sumarios/criar',[PagamentoController::class,'createSumarios']);
 });
 ##------------------------------------------------------------------------------
 

@@ -1,34 +1,32 @@
 @extends('layouts.App')
 @section('content')
-    @php
-        $class_input =
-            'appearance-none bg-transparent w-full border-none outline outline-1 outline-slate-300 focus:outline-blue-500 text-slate-500 placeholder-slate-400/50';
-    @endphp
 
-    <div class="mt-20 space-y-10">
+
+    <div class="flex flex-col mt-20 space-y-10">
+
         <x-Title-app title='pagamentos > registrar' icon='bi-credit-card' action='/pagamentos' text_action='voltar'
             type='secondary' />
 
 
-        <div class="ui-form">
+        <x-bladewind::card>
             <form method="get" class="flex items-center">
                 @csrf
 
-                <x-bladewind::input type="search" name="estagiario_id" id="aluno_id" placeholder="065"
+                <x-bladewind::input type="search" name="estagiario_id" id="aluno_id" placeholder="codigo-nome"
                     transparent_suffix="false" prefix="Pesquisar" prefixIsIcon="search" list="lista-estagiarios" />
 
                 <datalist id="lista-estagiarios">
 
-                    @foreach ($estagiarios as $estagiario)
-                        <option value="{{ $estagiario->id }}">
-                            {{ $estagiario->nome . "----------" . $estagiario->plano->nome . "-----" . $estagiario->bi }}
+                    @foreach ($estagiarios as $_estagiario)
+                        <option value="{{ $_estagiario->id }}">
+                            {{ $_estagiario->nome . "----------" . $_estagiario->plano->nome . "-----" . $_estagiario->bi }}
                         </option>
                     @endforeach
 
                 </datalist>
 
             </form>
-        </div>
+        </x-bladewind::card>
 
         @if ($estagiario)
             <div class="">
@@ -86,21 +84,36 @@
 
     </div>
 
+    <x-bladewind::card title="assuntos / pagamentos">
+
+        <form action="/pagamentos/sumarios/criar" method="post" class="ui-form">
+
+            @csrf
+
+            <x-bladewind::input label="Sumario" name="label" required="true" />
+            <x-bladewind::input label="Quantia" name="value" required="true" numeric="true" />
+
+            <x-bladewind::button canSubmit="true" title="adicionar">add</x-bladewind::button>
+
+
+        </form>
+    </x-bladewind::card>
+    {{-- end --}}
+
     <x-bladewind::card>
         <form action="/pagamentos/criar" method="POST" enctype="multipart/form-data" class="flex flex-col gap-4 ui-form">
             @csrf
 
             <!-- Aluno -->
             <x-bladewind::input label="Codigo do Estagiario" name="estagiario_id" required="true" type="text" />
-            <!-- Valor -->
-            <x-bladewind::input label="Quantia/Valor (kwz)" required="true" name="valor" required="true" numeric="true" />
 
             <!-- Método de Pagamento -->
             <x-bladewind::select label="Metodo de Pagamento" name="metodo" required="true" :data="[['label' => 'Trasnferencia', 'value' => 'ATM'], ['label' => 'Multicaixa', 'value' => 'TPA']]" />
 
             <!-- Método de Pagamento -->
-            <x-bladewind::select label="Sumario" multiple="true" name="sumario" required="true" :data="$summary_payments" />
-     
+            <x-bladewind::select label="Sumario" multiple="true"  name="sumarios" required="true" max_selectable="10"
+                data="{{ json_encode($summary_payments) }}" />
+
 
 
             <!-- Comprovativo -->
@@ -118,5 +131,7 @@
             </div>
         </form>
     </x-bladewind::card>
+
+
     </div>
 @endsection

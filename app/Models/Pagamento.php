@@ -7,7 +7,7 @@ class Pagamento extends Model
 {
 
 
-    protected $fillable = [];
+    protected $fillable = ['estagiario_id','usuario_id','valor','metodo','comprovativo','sumarios'];
     public function estagiario()
     {
         return $this->belongsTo(Estagiario::class);
@@ -16,7 +16,6 @@ class Pagamento extends Model
     }
     public function usuario()
     {
-
 
         return $this->belongsTo(Usuario::class);
     }
