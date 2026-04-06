@@ -35,7 +35,7 @@
                         <td>{{ $pagamento->sumarios}}</td>
                         <td>{{ $pagamento->valor . ' kz' }}</td>
                         <td>{{ $pagamento->created_at->format('d-m-Y') }}</td>
-                     
+
 
                         <td><x-bladewind::button onclick="showModal('{{ $pagamento->id }}')"><i
                                     class="bi bi-file-text"></i></x-bladewind::button></td>
@@ -76,23 +76,27 @@
                                             KZ</p>
                                     </div>
                                     <div>
-                                        <p><strong>Método de Pagamento:</strong><br>{{ $pagamento->m_pagamento }}</p>
+                                        <p><strong>Método de Pagamento:</strong><br>{{ $pagamento->metodo }}</p>
                                     </div>
+
                                     <div>
-                                        <p><strong>Referência:</strong><br>{{ $pagamento->referencia }}</p>
-                                    </div>
-                                    <div>
-                                        <p><strong>Descrição:</strong><br>{{ $pagamento->descricao }}</p>
+                                        <p><strong>Descrição:</strong><br> {{ $pagamento->sumarios }}</p>
                                     </div>
                                 </div>
 
                                 <!-- Link para comprovativo -->
                                 <div class="mt-4">
-                                    <strong>Comprovativo de Pagamento:</strong><br>
-                                    <a href="{{ asset('../store/' . $pagamento->comprovativo) }}" target="_blank"
-                                        class="text-blue-600 underline hover:text-blue-800">
-                                        Visualizar Comprovativo
+                                    <strong>Comprovativo</strong><br>
+
+
+                                    <a href="{{ asset('storage/' . $pagamento->comprovativo) }}" target="_blank"
+                                        class="flex items-center gap-1 text-indigo-500 hover:underline p-4">
+
+                                        <i class="bi bi-file-earmark-break"></i>
+                                        <span>ver o documento</span>
                                     </a>
+
+
                                 </div>
 
                                 {{-- gerar recibo --}}
