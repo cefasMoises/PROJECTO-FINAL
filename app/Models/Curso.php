@@ -7,7 +7,7 @@ class Curso extends Model
 {
 
 
-    protected $fillabel=['nome','descricao'];
+    protected $fillabel=["nome","descricao"];
 
     public function alunos()
     {

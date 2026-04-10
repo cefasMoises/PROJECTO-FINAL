@@ -39,6 +39,11 @@
             font-size: 16px;
             font-weight: bold;
         }
+
+        .header-col {
+            background-color: #EEEEEE;
+
+        }
     </style>
 </head>
 
@@ -49,9 +54,10 @@
         <tr>
             <td class="no-border">
                 <div class="header">
-                    <h1>instituto medio politecnico do Bengo </h1>
-                    <p>NIF: 123456789 | Luanda – Angola</p>
-                    <p>Email: bengo@escola.com | Tel: +244 999 999 999</p>
+                    <h2>Instituto Politecnico Médio do Bengo </h2>
+                    <h3>Recibo de cliente </h3>
+                    <p>NIF: 003456789 | Bengo – Angola</p>
+                    <p>Email: bengo@escola.com | Tel: +244 939 929 499</p>
                 </div>
 
             </td>
@@ -62,50 +68,70 @@
         </tr>
     </table>
 
-    <hr>
 
-    <!-- Dados do Aluno -->
+    <!-- Dados do estagiario -->
     <table>
-        <tr>
-            <th colspan="3">Dados do Aluno</th>
+        <tr class="header-col">
+            <th colspan="3">Dados do estagiario</th>
         </tr>
         <tr>
-            <td><strong>Nome:</strong> {{ $pagamento->aluno->nome }}</td>
-            <td><strong>Email:</strong> {{ $pagamento->aluno->email ?? "sem email"}}</td>
-            <td><strong>Telefone:</strong> {{ $pagamento->aluno->tel }}</td>
+            <td><strong>Nome:</strong> {{ $pagamento->estagiario->nome }}</td>
+            <td><strong>Email:</strong> {{ $pagamento->estagiario->email ?? "N/A"}}</td>
+            <td><strong>Telefone:</strong> {{ $pagamento->estagiario->tel }}</td>
 
         </tr>
         <tr>
-            <td><strong>Curso:</strong> {{ $pagamento->aluno->cursos()->get()[0]->nome }}</td>
+            <td><strong>Curso:</strong> {{ $pagamento->estagiario->plano->get()[0]->nome }}</td>
 
+            <td><strong>Codigo:</strong> {{$pagamento->estagiario->id}}</td>
 
+            <td><strong>Outos:</strong> N/A</td>
         </tr>
 
     </table>
 
     <!-- Detalhes do Pagamento -->
     <table>
-        <tr>
+        <tr class="header-col">
             <th colspan="2">Detalhes do Pagamento</th>
         </tr>
+
         <tr>
+            @php
+
+                $sumarios = explode("KWZ", $pagamento->sumarios);
+                $total = 0.00;
+
+                foreach ($sumarios as $sum) {
+
+
+                    $array = explode("----", $sum);
+                    $array = array_last($array);
+
+                    $valor = floatval(str_replace(['.', ','], ['', '.'], $array));
+
+                    $total += (float) $valor;
+                }
+                
+            @endphp
+
             <td><strong>Valor:</strong></td>
-            <td>{{ number_format($pagamento->valor, 2, ',', '.') }} KZ</td>
+            <td>{{ number_format($total, 2, ',', '.') }} KZ</td>
         </tr>
         <tr>
             <td><strong>Método de Pagamento:</strong></td>
-            <td>{{ $pagamento->m_pagamento }}</td>
+            <td>{{ $pagamento->metodo }}</td>
         </tr>
-        <tr>
+        {{-- <tr>
             <td><strong>Referência:</strong></td>
             <td>{{ $pagamento->referencia }}</td>
-        </tr>
+        </tr> --}}
         <tr>
             <td><strong>Descrição:</strong></td>
-            <td>{{ $pagamento->descricao }}</td>
+            <td>{{ $pagamento->sumarios }}</td>
         </tr>
         <tr>
-            <td><strong>Usuário Responsável:</strong></td>
+            <td><strong>Atendimento Responsável:</strong></td>
             <td>{{ $pagamento->usuario->nome ?? 'N/A' }}</td>
         </tr>
     </table>

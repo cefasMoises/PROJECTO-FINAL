@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Curso;
+use App\Models\Instituto;
 use Illuminate\Support\Facades\Route;
 // end init
 use App\Http\Controllers\AlunoController;
@@ -117,7 +119,7 @@ Route::middleware([Secretaria::class])->prefix('/pagamentos')->group(function ()
     Route::get('/form/{id?}', [PagamentoController::class, 'form']);
     Route::post('/criar', [PagamentoController::class, 'create']);
     Route::get('/{id}', [PagamentoController::class, 'show']);
-    Route::post('/sumarios/criar',[PagamentoController::class,'createSumarios']);
+    Route::post('/sumarios/criar', [PagamentoController::class, 'createSumarios']);
 });
 ##------------------------------------------------------------------------------
 
@@ -151,7 +153,7 @@ Route::middleware([Admin::class])->prefix('/usuarios')->group(function () {
     Route::post('/atualizar', [UsuarioController::class, 'update']);
     Route::get('/deletar/{id}', [UsuarioController::class, 'delete']);
     Route::get('/senha/{id}', [UsuarioController::class, 'password']);
-    Route::post('/senha/update/{id}', [UsuarioController::class,'passwordUpdate']);
+    Route::post('/senha/update/{id}', [UsuarioController::class, 'passwordUpdate']);
 
 });
 
@@ -192,4 +194,30 @@ Route::middleware([Admin::class])->prefix('/institutos')->group(function () {
     Route::post('/deletar', [InstitutoController::class, 'delete']);
     Route::post('/criar', [InstitutoController::class, 'create']);
 });
-    #-------------------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------------------
+
+Route::get("/auto", function () {
+
+
+
+    Curso::create(
+        [
+            "nome" => "informatica",
+            "descricao" => ""
+        ]
+    );
+
+    Instituto::create([
+        "nome" => "Instituto politecnico do Bengo",
+        "email" => "bengo@escola.com",
+        "nif" => "01203973"
+    ]);
+
+
+    return redirect()->back()->with("sucess", "Auto preenchimento de dados");
+
+
+
+
+
+});

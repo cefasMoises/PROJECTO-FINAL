@@ -6,11 +6,9 @@ use App\Models\Estagiario;
 use App\Models\Precos;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
-use Illuminate\Support\Number;
-use Illuminate\Support\Str;
+
 use App\Models\Curso;
-use App\Models\Turma;
-use App\Models\Aluno;
+
 use App\Models\Pagamento;
 use App\Models\Usuario;
 use Illuminate\Support\Facades\Validator;
@@ -63,7 +61,13 @@ class PagamentoController extends Controller
         if ($pagamento != null) {
 
             $pdf = Pdf::loadView('pdf.ficha', ['pagamento' => $pagamento]);
-            return $pdf->stream($pagamento->created_at);
+            $file_name = $pagamento->created_at . time().".pdf";
+
+            $pagamento::update(["fatura"=>$file_name]);
+
+            $pdf->save(public_path("recibos/".$file_name));
+            return $pdf->download($file_name);
+
         }
     }
 
@@ -95,7 +99,7 @@ class PagamentoController extends Controller
 
         foreach ($precos as $preco_id) {
 
-            $precos_name .= Precos::find($preco_id)->label." ,";
+            $precos_name .= Precos::find($preco_id)->label . " ,";
 
         }
 

@@ -6,5 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Instituto extends Model
 {
+
+
+    protected $fillable = ["nome", "email", "nif"];
     //
 }

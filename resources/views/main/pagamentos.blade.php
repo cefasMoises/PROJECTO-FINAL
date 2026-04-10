@@ -52,8 +52,9 @@
                                             {{ $pagamento->created_at->format('d/m/Y H:i') }}</p>
                                         <p><strong>Agente:</strong> #{{ $pagamento->usuario->nome }}</p>
                                     </div>
-                                    <div class="w-24 h-24 rounded overflow-hidden border">
-                                        <img src="{{ asset('uploads/' . $pagamento->estagiario->foto) }}"
+                                    <div
+                                        class="w-24 h-24 rounded overflow-hidden border cursor-pointer transition-all delay-75 ease-linear hover:scale-150 hover:p-0 bg-white p-4 hover:shadow-md">
+                                        <img src="{{ asset('storage/' . $pagamento->estagiario->foto) }}"
                                             alt="Foto do estagiario-" class="w-full h-full object-cover">
                                     </div>
                                 </div>
@@ -64,17 +65,20 @@
                                         <p><strong>Nome do estagiario-:</strong><br>{{ $pagamento->estagiario->nome }}</p>
                                     </div>
                                     <div>
-                                        <p><strong>Email do estagiario-:</strong><br>{{ $pagamento->estagiario->email }}</p>
+                                        <p><strong>Email do
+                                                estagiario:</strong>
+                                            @if($pagamento->estagiario->email)
+                                                {{ $pagamento->estagiario->email }}
+                                            @else
+                                                {!! voidStatus() !!}
+                                            @endif
+                                        </p>
                                     </div>
                                 </div>
 
                                 <!-- Informações do pagamento -->
                                 <div class="grid grid-cols-2 gap-4 mb-6">
-                                    <div>
-                                        <p><strong>Valor
-                                                Pago:</strong><br>{{ number_format($pagamento->valor, 2, ',', '.') }}
-                                            KZ</p>
-                                    </div>
+
                                     <div>
                                         <p><strong>Método de Pagamento:</strong><br>{{ $pagamento->metodo }}</p>
                                     </div>
@@ -100,11 +104,20 @@
                                 </div>
 
                                 {{-- gerar recibo --}}
-                                <div class="flex items-center justify-end mt-4">
 
-                                    <form action="/pagamentos/{{ $pagamento->id }}" action="get" target="_blank">
-                                        <x-bladewind::button can_submit='true'>gerar fatura</x-bladewind::button>
-                                    </form>
+                                <div class="flex items-center justify-end mt-4">
+                                    @if($pagamento->fatura)
+
+                                        <form action="/pagamentos/{{ $pagamento->id }}" action="get" target="_blank">
+                                            <x-bladewind::button can_submit='true'>gerar fatura</x-bladewind::button>
+                                        </form>
+
+                                    @else
+                                        <a href="{{asset($pagamento->fatura) }}">
+                                            <i class="bi bi-view"></i>
+                                            ver a fatura
+                                        </a>
+                                    @endif
                                 </div>
                             </div>
                         </x-bladewind::modal>

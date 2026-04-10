@@ -7,16 +7,14 @@ class Pagamento extends Model
 {
 
 
-    protected $fillable = ['estagiario_id','usuario_id','valor','metodo','comprovativo','sumarios'];
+    protected $fillable = ['estagiario_id', 'usuario_id', 'valor', 'metodo', 'comprovativo', 'sumarios', 'fatura'];
     public function estagiario()
     {
         return $this->belongsTo(Estagiario::class);
 
-
     }
     public function usuario()
     {
-
         return $this->belongsTo(Usuario::class);
     }
 }

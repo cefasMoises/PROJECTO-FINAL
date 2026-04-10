@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('metodo');
             $table->json('sumarios');
             $table->text('comprovativo');
+            $table->text("fatura")->nullable();
             $table->foreignId('estagiario_id')->constrained()->onDelete('cascade');
             $table->foreignId('usuario_id')->constrained()->onDelete('cascade');
 
